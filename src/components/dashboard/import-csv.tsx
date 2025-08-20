@@ -22,14 +22,22 @@ export default function ImportCSV() {
     setMessage(null);
 
     try {
-      const result = await importCSVFile(file);
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/import-csv', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
       
-      if (result.success) {
+      if (response.ok && result.success) {
         setMessage({ type: 'success', text: result.message });
         // Refresh the page to show new leads
-        window.location.reload();
+        setTimeout(() => window.location.reload(), 2000);
       } else {
-        setMessage({ type: 'error', text: result.message });
+        setMessage({ type: 'error', text: result.error || 'Import failed' });
       }
     } catch (error) {
       console.error('Import error:', error);
@@ -43,15 +51,64 @@ export default function ImportCSV() {
     }
   };
 
+  const handleImportDealerContacts = async () => {
+    setIsImporting(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch('/api/import-csv', {
+        method: 'POST',
+      });
+
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
+        setMessage({ 
+          type: 'success', 
+          text: `${result.message}. AI qualification is running in the background.` 
+        });
+        // Refresh the page to show new leads
+        setTimeout(() => window.location.reload(), 2000);
+      } else {
+        setMessage({ type: 'error', text: result.error || 'Import failed' });
+      }
+    } catch (error) {
+      console.error('Import error:', error);
+      setMessage({ type: 'error', text: 'Failed to import dealer contacts' });
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
-      <h3 className="text-lg font-semibold mb-4">Import Leads</h3>
+      <h3 className="text-lg font-semibold text-gray-600 mb-4">Import Leads</h3>
       
       <div className="space-y-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="text-center space-y-2">
+            <div className="text-sm font-medium text-blue-900">
+              Quick Start: Import Dealer Contacts
+            </div>
+            <div className="text-sm text-blue-700 mb-3">
+              Import the automotive dealer contacts from your saved file
+            </div>
+            <Button 
+              onClick={handleImportDealerContacts}
+              disabled={isImporting}
+              className="w-full text-gray-600"
+            >
+              {isImporting ? 'Importing & AI Qualifying...' : 'Import Dealer Contacts'}
+            </Button>
+          </div>
+        </div>
+
+        <div className="text-center text-gray-500 text-sm">or</div>
+
         <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
           <div className="space-y-2">
             <div className="text-sm text-gray-600">
-              Upload your dealership contacts CSV file
+              Upload a different CSV file
             </div>
             <input
               ref={fileInputRef}

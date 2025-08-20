@@ -1,7 +1,8 @@
 # Job Hunter CRM - Project Planning Document
 
 ## Executive Summary
-Job Hunter is a personal CRM application designed for targeted outreach to automotive dealership decision makers. The system will process an existing email list, qualify leads using AI, generate personalized outreach emails, and track performance through comprehensive analytics.
+Job Hunter is a personal CRM application for Winston designed for targeted outreach to automotive dealership decision makers. The system will process an existing email list, qualify leads using AI, generate personalized outreach emails, and track performance through comprehensive analytics.
+-it's to be later adapted into a saass for a custom CRM that combines AI qualification, personalized outreach, and comprehensive analytics for individuals looking for a job.
 
 ## System Architecture
 

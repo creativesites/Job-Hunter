@@ -3,6 +3,10 @@ import { redirect } from "next/navigation";
 import DashboardStats from "@/components/dashboard/dashboard-stats";
 import LeadsList from "@/components/dashboard/leads-list";
 import ImportCSV from "@/components/dashboard/import-csv";
+import EmailQueueWidget from "@/components/dashboard/email-queue-widget";
+import DashboardHeader from "@/components/dashboard/dashboard-header";
+import DailyCurationPanel from "@/components/dashboard/daily-curation-panel";
+import NotificationsWidget from "@/components/dashboard/notifications-widget";
 
 export default async function DashboardPage() {
   const user = await currentUser();
@@ -13,26 +17,24 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="border-b bg-white">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            <div className="text-sm text-gray-600">
-              Welcome back, {user.firstName || user.emailAddresses[0]?.emailAddress}
-            </div>
-          </div>
-        </div>
-      </div>
+      <DashboardHeader 
+        userName={user.firstName || user.emailAddresses[0]?.emailAddress || 'User'}
+      />
 
       <div className="container mx-auto px-6 py-8">
         <div className="grid gap-8">
           <DashboardStats />
           
+          {/* AI Daily Curation - Featured prominently */}
+          <DailyCurationPanel />
+          
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <LeadsList />
             </div>
-            <div>
+            <div className="space-y-8">
+              <NotificationsWidget />
+              <EmailQueueWidget />
               <ImportCSV />
             </div>
           </div>
