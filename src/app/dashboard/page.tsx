@@ -7,6 +7,7 @@ import EmailQueueWidget from "@/components/dashboard/email-queue-widget";
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 import DailyCurationPanel from "@/components/dashboard/daily-curation-panel";
 import NotificationsWidget from "@/components/dashboard/notifications-widget";
+import ManualCurationButton from "@/components/dashboard/manual-curation-button";
 
 export default async function DashboardPage() {
   const user = await currentUser();
@@ -25,8 +26,11 @@ export default async function DashboardPage() {
         <div className="grid gap-8">
           <DashboardStats />
           
-          {/* AI Daily Curation - Featured prominently */}
-          <DailyCurationPanel />
+          {/* AI Curation Section */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <DailyCurationPanel />
+            <ManualCurationButton />
+          </div>
           
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">

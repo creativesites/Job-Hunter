@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { CopilotKit } from "@copilotkit/react-core";
 import "./globals.css";
 import "./home.css";
 
@@ -20,7 +21,9 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
-          {children}
+          <CopilotKit runtimeUrl="/api/copilotkit">
+            {children}
+          </CopilotKit>
         </body>
       </html>
     </ClerkProvider>

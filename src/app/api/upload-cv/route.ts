@@ -66,21 +66,44 @@ export async function POST(request: NextRequest) {
     const fileUrl = `/api/placeholder-cv/${fileName}`;
 
     // Update user settings with CV information
-    const { data: settings, error: updateError } = await supabase
+    // First check if user settings exist
+    const { data: existingSettings } = await supabase
       .from('user_settings')
-      .upsert({
-        user_id: user.id,
-        cv_file_url: fileUrl,
-        cv_file_name: file.name,
-        updated_at: new Date().toISOString(),
-      })
-      .select()
+      .select('id')
+      .eq('user_id', user.id)
       .single();
+
+    let updateError;
+    if (existingSettings) {
+      // Update existing record
+      const { error } = await supabase
+        .from('user_settings')
+        .update({
+          cv_file_url: fileUrl,
+          cv_file_name: file.name,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('user_id', user.id);
+      updateError = error;
+    } else {
+      // Insert new record
+      const { error } = await supabase
+        .from('user_settings')
+        .insert({
+          user_id: user.id,
+          cv_file_url: fileUrl,
+          cv_file_name: file.name,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
+      updateError = error;
+    }
 
     if (updateError) {
       console.error('Error updating user settings:', updateError);
       return NextResponse.json({ 
-        error: 'Failed to save CV information' 
+        error: 'Failed to save CV information',
+        details: updateError.message 
       }, { status: 500 });
     }
 
